@@ -47,7 +47,6 @@ public class UserDao {
 		return repo.findByNameAndPhone(name,phone);
 	}
 
-	
 
 
 }

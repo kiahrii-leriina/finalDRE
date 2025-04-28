@@ -3,7 +3,7 @@ package org.jsp.DA.exceptionHandler;
 import org.jsp.DA.entity.User;
 import org.jsp.DA.exceptionClasses.DuplicateEntryException;
 import org.jsp.DA.exceptionClasses.NOUserFoundException;
-import org.jsp.DAutil.ResponseStructure;
+import org.jsp.DA.util.ResponseStructure;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

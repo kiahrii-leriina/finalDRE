@@ -2,9 +2,10 @@ package org.jsp.DA.controller;
 
 import java.util.List;
 
+
 import org.jsp.DA.entity.User;
 import org.jsp.DA.service.UserService;
-import org.jsp.DAutil.ResponseStructure;
+import org.jsp.DA.util.ResponseStructure;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -54,11 +55,12 @@ public class UserControler {
 		return service.updateUser(user);
 	}
 
-//	@PatchMapping("/updateEmail/{name}/{phone}/{email}")
-//	public ResponseEntity<ResponseStructure<User>> updateEmail(@PathVariable(name = "name") String name,
-//			@PathVariable(name = "phone") long phone, @PathVariable(name = "email") String email) {
-//
-//		return service.updateEmail(name,phone,email);
-//	}
+	@PatchMapping("/updateEmail/{name}/{phone}/{email}")
+	public ResponseEntity<ResponseStructure<User>> updateEmail(@PathVariable String name,
+			@PathVariable long phone, @PathVariable String email) {
+
+		return service.updateEmail(name,phone,email);
+	}
+	
 
 }

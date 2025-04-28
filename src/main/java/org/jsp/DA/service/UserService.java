@@ -7,8 +7,8 @@ import org.jsp.DA.dao.UserDao;
 import org.jsp.DA.entity.User;
 import org.jsp.DA.exceptionClasses.DuplicateEntryException;
 import org.jsp.DA.exceptionClasses.NOUserFoundException;
+import org.jsp.DA.util.ResponseStructure;
 import org.jsp.DA.util.UserGender;
-import org.jsp.DAutil.ResponseStructure;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +23,9 @@ public class UserService {
 	@Autowired
 	private UserDao dao;
 
+	@Autowired
+	private EmailService emailService;
+
 	@Transactional
 	public ResponseEntity<ResponseStructure<User>> saveUser(User user) {
 
@@ -32,6 +35,7 @@ public class UserService {
 		}
 
 		User savedUser = dao.saveUser(user);
+		emailService.sendEmail(savedUser);
 
 		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.OK.value())
 				.message("USER SAVED SUCCESSFULLY").body(savedUser).build();
@@ -117,6 +121,7 @@ public class UserService {
 //
 //				subList(0, Math.min(5, 3)) → subList(0, 3)
 //				✅ Safely gives you 3 users.
+		emailService.matchUsers(user, opositeGenderUsers);
 
 		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.OK.value()).message("TOP MATCHING USERS")
 				.body(topMatches).build();
@@ -165,21 +170,27 @@ public class UserService {
 		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.OK.value())
 				.message("User Updated successfully").body(saveUser).build();
 		ResponseEntity re = ResponseEntity.status(HttpStatus.OK).body(rs);
-		
 
 		return re;
 	}
 
-//	public ResponseEntity<ResponseStructure<User>> updateEmail(String name, long phone, String email) {
-//		
-//		Optional<User>optional = dao.findByNameAndPhone(name,phone);
-//		if(optional.isEmpty()) {
-//			throw new NOUserFoundException("NO user found with the given name and email: "+name+","+email);
-//		}
-//		
-//		
-//		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.OK.value()).message("")
-//		return null;
-//	}
+	public ResponseEntity<ResponseStructure<User>> updateEmail(String name, long phone, String email) {
+
+		Optional<User> optional = dao.findByNameAndPhone(name, phone);
+		if (optional.isEmpty()) {
+			throw new NOUserFoundException("NO user found with the given name and email: " + name + "," + email);
+		}
+
+		User user = optional.get();
+		user.setEmail(email);
+
+		User saveUser = dao.saveUser(user);
+		ResponseStructure rs = ResponseStructure.builder().status(HttpStatus.OK.value())
+				.message("User updated successfully").body(saveUser).build();
+		
+		ResponseEntity re = ResponseEntity.status(HttpStatus.OK).body(rs);
+
+		return re;
+	}
 
 }
